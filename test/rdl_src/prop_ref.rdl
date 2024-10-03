@@ -1,0 +1,103 @@
+
+addrmap prop_value_ref {
+    reg {
+        default sw=rw;
+        default hw=rw;
+        field {} a = 0;
+        field {} b;
+        field {} c;
+        field {} d;
+        field {} e;
+        b->next = a->reset;
+        c->next = a->reset;
+        d->next = a->anded;
+        e->next = b->anded;
+    }y;
+};
+
+addrmap ref_in_array {
+    reg {
+        default sw=rw;
+        default hw=rw;
+        field {} a = 0;
+        field {} b = 0;
+        b->next = a->anded;
+    } myreg[8];
+};
+
+addrmap err_missing_reset {
+    reg {
+        default sw=rw;
+        default hw=rw;
+        field {} a;
+        field {} b;
+        b->next = a->reset; // a's reset was never set
+    }y;
+};
+
+addrmap err_circular_ref {
+    reg {
+        default sw=rw;
+        default hw=rw;
+        field {} a;
+        field {} b;
+        a->next = b->next;
+        b->next = a->next;
+    }y;
+};
+
+addrmap err_self_reset {
+    reg {
+        default sw=rw;
+        default hw=rw;
+        field {} a;
+        a->reset = a;
+    }y;
+};
+
+addrmap inferred_vector {
+    reg {
+        default sw=rw;
+        default hw=rw;
+        field {
+            sw=rw; hw=w; we;
+        } a;
+        field {} b;
+        field {} c;
+        b->next = a->we;
+        c->next = a->wel;
+    }y;
+};
+
+addrmap err_no_inferred {
+    reg {
+        default sw=rw;
+        default hw=rw;
+        field {} a;
+        field {} b;
+        b->next = a->we;
+    }y;
+};
+
+addrmap err_not_a_counter {
+    reg {
+        default sw=rw;
+        default hw=rw;
+        field {} a;
+        field {} b;
+        b->next = a->incr;
+    }y;
+};
+
+addrmap err_no_counter_threshold {
+    reg {
+        default sw=rw;
+        default hw=rw;
+        field {
+            counter;
+        } a;
+        field {} b;
+        field {} c;
+        b->next = a->incrthreshold;
+    }y;
+};
